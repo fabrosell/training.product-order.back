@@ -1,13 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using ProductsOrder.Api.Data;
 using ProductsOrder.Api.Repositories;
 using ProductsOrder.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IProductRepository, MockProductRepository>();
+// Add services to the container.
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 // CORS policy for Angular app
@@ -16,12 +17,15 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(devCorsPolicy, policyBuilder =>
     {
-        policyBuilder.WithOrigins("https://localhost:4200")
+        policyBuilder.WithOrigins("http://localhost:4200", "https://localhost:4200")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
 });
 
+// Add db Context
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

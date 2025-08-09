@@ -14,11 +14,29 @@ namespace ProductsOrder.Api.Services
             this._logger = logger;
         }
 
-        public async Task<IEnumerable<Product>> GetProductsAsync()
+        public Task<Product> CreateProductAsync(CreateProductDto productDto)
         {
-            _logger.LogInformation("Fetching all products from the service layer");
+            throw new NotImplementedException();
+        }
 
-            return await this._productRepository.GetAllAsync();
+        public Task<bool> DeleteProductAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Product?> GetProductByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Product>> GetProductsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateProductAsync(int id, UpdateProductDto productDto)
+        {
+            throw new NotImplementedException();
         }
     }
 }
