@@ -14,29 +14,44 @@ namespace ProductsOrder.Api.Services
             this._logger = logger;
         }
 
-        public Task<Product> CreateProductAsync(CreateProductDto productDto)
+        public async  Task<Product> CreateProductAsync(CreateProductDto productDto)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation($"Creating product with name = {productDto.Name}");
+            return await this._productRepository.AddAsync(new Product() { Name = productDto.Name, Price = productDto.Price });
         }
 
-        public Task<bool> DeleteProductAsync(int id)
+        public async Task<bool> DeleteProductAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = await this._productRepository.GetByIdAsync(id);
+
+            if (product == null) return false;
+
+            await this._productRepository.DeleteAsync(id);
+
+            return true;
         }
 
-        public Task<Product?> GetProductByIdAsync(int id)
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation($"Fetching products by id = {id}");
+            return await this._productRepository.GetByIdAsync(id);
         }
 
-        public Task<IEnumerable<Product>> GetProductsAsync()
+        public async Task<IEnumerable<Product>> GetProductsAsync()
         {
-            throw new NotImplementedException();
+            _logger.LogInformation("Fetching all products from the service layer");
+            return await this._productRepository.GetAllAsync();
         }
 
-        public Task<bool> UpdateProductAsync(int id, UpdateProductDto productDto)
+        public async Task<bool> UpdateProductAsync(int id, UpdateProductDto productDto)
         {
-            throw new NotImplementedException();
+            var product = await this._productRepository.GetByIdAsync(id);
+            
+            if (product == null) return false;
+
+            await this._productRepository.UpdateAsync(product);
+
+            return true;
         }
     }
 }
