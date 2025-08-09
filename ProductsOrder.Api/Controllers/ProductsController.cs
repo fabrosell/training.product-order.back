@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProductsOrder.Api.Models;
 using ProductsOrder.Api.Services;
 
 namespace ProductsOrder.Api.Controllers
@@ -16,10 +17,34 @@ namespace ProductsOrder.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll() => Ok(await this._productService.GetProductsAsync());
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var products = await this._productService.GetProductsAsync();
-            return Ok(products);
+            var product = await this._productService.GetProductByIdAsync(id);
+            return product == null ? NotFound() : Ok(product);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateProductDto productDto)
+        {
+            var newProduct = await this._productService.CreateProductAsync(productDto);
+            return CreatedAtAction(nameof(GetById), new { id = newProduct.Id }, newProduct);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, UpdateProductDto productDto)
+        {
+            var success = await this._productService.UpdateProductAsync(id, productDto);
+            return success ? NoContent() : NotFound();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await this._productService.DeleteProductAsync(id);
+            return success ? NoContent() : NotFound();
         }
     }
 }

@@ -49,6 +49,9 @@ namespace ProductsOrder.Api.Services
             
             if (product == null) return false;
 
+            product.Name = productDto.Name;
+            product.Price = productDto.Price;
+
             await this._productRepository.UpdateAsync(product);
 
             return true;

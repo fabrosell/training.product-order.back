@@ -1,32 +1,36 @@
-﻿using ProductsOrder.Api.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ProductsOrder.Api.Data;
+using ProductsOrder.Api.Models;
 
 namespace ProductsOrder.Api.Repositories
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository(AppDbContext context) : IProductRepository
     {
-        public Task<Product> AddAsync(Product product)
+        public async Task<IEnumerable<Product>> GetAllAsync() => await context.Products.ToListAsync();
+
+        public async Task<Product?> GetByIdAsync(int id) => await context.Products.FindAsync(id);
+
+        public async Task<Product> AddAsync(Product product)
         {
-            throw new NotImplementedException();
+            context.Products.Add(product);
+            await context.SaveChangesAsync();
+            return product;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task UpdateAsync(Product product)
         {
-            throw new NotImplementedException();
+            context.Products.Update(product);            
+            await context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Product>> GetAllAsync()
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Product?> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(Product product)
-        {
-            throw new NotImplementedException();
+            var product = await context.Products.FindAsync(id);
+            if (product != null)
+            {
+                context.Products.Remove(product);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

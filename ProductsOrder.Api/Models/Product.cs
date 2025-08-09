@@ -11,11 +11,11 @@ namespace ProductsOrder.Api.Models
 
     public record CreateProductDto(
         [Required][StringLength(100)] string Name,
-        [Range(0.01, 10000)] decimal Price
+        [Range(0.01, 10000000)] decimal Price
     );
 
     public record UpdateProductDto(
         [Required][StringLength(100)] string Name,
-        [Range(0.01, 10000)] decimal Price
+        [Range(0.01, 10000000)] decimal Price
     );
 }
