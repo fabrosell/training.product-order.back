@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProductsOrder.Api.Data;
+using ProductsOrder.Api.Extensions;
 using ProductsOrder.Api.Repositories;
 using ProductsOrder.Api.Services;
 
@@ -31,6 +32,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Register the custom exception handler and problem details
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,6 +51,8 @@ app.UseCors(devCorsPolicy);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseExceptionHandler();
 
 app.MapControllers();
 

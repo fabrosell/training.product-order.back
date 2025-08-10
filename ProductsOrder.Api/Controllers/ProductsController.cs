@@ -46,5 +46,11 @@ namespace ProductsOrder.Api.Controllers
             var success = await this._productService.DeleteProductAsync(id);
             return success ? NoContent() : NotFound();
         }
+
+        [HttpGet("check-name")]
+        public async Task<IActionResult> CheckNameExists([FromQuery] string name, [FromQuery] int? excludeID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

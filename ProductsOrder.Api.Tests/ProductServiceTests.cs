@@ -2,6 +2,7 @@ using Castle.Core.Logging;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ProductsOrder.Api.Models;
+using ProductsOrder.Api.Models.Exceptions;
 using ProductsOrder.Api.Repositories;
 using ProductsOrder.Api.Services;
 
@@ -92,6 +93,31 @@ namespace ProductsOrder.Api.Tests
             // Assert
             Assert.False(result);
             _mockRepo.Verify(repo => repo.DeleteAsync(1), Times.Never);
+        }
+
+        [Fact]
+        public async Task CreateProductAsync_ShouldThrowException_WhenNameIsDuplicate()
+        {
+            // Arrange
+            var dto = new CreateProductDto("Duplicate Name", 10m);
+            _mockRepo.Setup(repo => repo.NameExistsAsync("Duplicate Name", null)).ReturnsAsync(true);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DuplicatedProductNameException>(() => _service.CreateProductAsync(dto));
+        }
+
+        [Fact]
+        public async Task UpdateProductAsync_ShouldThrowException_WhenNameIsDuplicate()
+        {
+            // Arrange
+            var dto = new UpdateProductDto("Duplicate Name", 10m);
+            var existingProduct = new Product { Id = 1, Name = "Original Name", Price = 5m };
+            _mockRepo.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(existingProduct);
+            // Check for "Duplicate Name", excluding ID 1
+            _mockRepo.Setup(repo => repo.NameExistsAsync("Duplicate Name", 1)).ReturnsAsync(true);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<DuplicatedProductNameException>(() => _service.UpdateProductAsync(1, dto));
         }
     }
 }

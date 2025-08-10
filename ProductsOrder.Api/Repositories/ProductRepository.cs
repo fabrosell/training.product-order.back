@@ -32,5 +32,15 @@ namespace ProductsOrder.Api.Repositories
                 await context.SaveChangesAsync();
             }
         }
+
+        public async Task<bool> NameExistsAsync(string name, int? excludeId = null)
+        {
+            var query = context.Products.Where(p => p.Name.ToLower() == name.ToLower());
+
+            if (excludeId.HasValue)
+                query = query.Where(p => p.Id != excludeId.Value);
+
+            return await query.AnyAsync();
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using ProductsOrder.Api.Models;
+using ProductsOrder.Api.Models.Exceptions;
 using ProductsOrder.Api.Repositories;
+using System.Xml.Linq;
 
 namespace ProductsOrder.Api.Services
 {
@@ -14,9 +16,16 @@ namespace ProductsOrder.Api.Services
             this._logger = logger;
         }
 
-        public async  Task<Product> CreateProductAsync(CreateProductDto productDto)
+        public async Task<Product> CreateProductAsync(CreateProductDto productDto)
         {
             _logger.LogInformation($"Creating product with name = {productDto.Name}");
+
+            if (await this._productRepository.NameExistsAsync(productDto.Name))
+            {
+                _logger.LogError($"Product name {productDto.Name} already exists ");
+                throw new DuplicatedProductNameException();
+            }
+
             return await this._productRepository.AddAsync(new Product() { Name = productDto.Name, Price = productDto.Price });
         }
 
@@ -43,11 +52,23 @@ namespace ProductsOrder.Api.Services
             return await this._productRepository.GetAllAsync();
         }
 
+        public async Task<bool> NameExistsAsync(string name, int? excludeId = null)
+        {
+            _logger.LogInformation($"Checking if name {name} exists for productid {excludeId}");
+            return await this._productRepository.NameExistsAsync(name, excludeId);
+        }
+
         public async Task<bool> UpdateProductAsync(int id, UpdateProductDto productDto)
         {
             var product = await this._productRepository.GetByIdAsync(id);
-            
+
             if (product == null) return false;
+
+            if (await this._productRepository.NameExistsAsync(productDto.Name, id))
+            {
+                _logger.LogError($"Product name {productDto.Name} already exists ");
+                throw new DuplicatedProductNameException();
+            }
 
             product.Name = productDto.Name;
             product.Price = productDto.Price;

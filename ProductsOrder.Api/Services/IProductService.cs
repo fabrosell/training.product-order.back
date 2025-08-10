@@ -9,5 +9,6 @@ namespace ProductsOrder.Api.Services
         Task<Product> CreateProductAsync(CreateProductDto productDto);
         Task<bool> UpdateProductAsync(int id, UpdateProductDto productDto);
         Task<bool> DeleteProductAsync(int id);
+        Task<bool> NameExistsAsync(string name, int? excludeId = null);
     }
 }

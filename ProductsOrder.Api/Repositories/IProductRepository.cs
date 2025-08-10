@@ -9,5 +9,6 @@ namespace ProductsOrder.Api.Repositories
         Task<Product> AddAsync(Product product);
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
+        Task<bool> NameExistsAsync(string name, int? excludeId = null);
     }
 }
