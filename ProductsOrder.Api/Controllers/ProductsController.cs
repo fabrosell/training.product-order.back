@@ -48,7 +48,7 @@ namespace ProductsOrder.Api.Controllers
         }
 
         [HttpGet("check-name")]
-        public async Task<IActionResult> CheckNameExists([FromQuery] string name, [FromQuery] int? excludeID)
+        public async Task<IActionResult> CheckNameExists(string name, int? excludeID)
         {
             var exists = await this._productService.NameExistsAsync(name, excludeID);
             return Ok(new { exists });
