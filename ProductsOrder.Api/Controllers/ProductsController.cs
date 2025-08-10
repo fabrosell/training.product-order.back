@@ -50,7 +50,8 @@ namespace ProductsOrder.Api.Controllers
         [HttpGet("check-name")]
         public async Task<IActionResult> CheckNameExists([FromQuery] string name, [FromQuery] int? excludeID)
         {
-            throw new NotImplementedException();
+            var exists = await this._productService.NameExistsAsync(name, excludeID);
+            return Ok(new { exists });
         }
     }
 }
